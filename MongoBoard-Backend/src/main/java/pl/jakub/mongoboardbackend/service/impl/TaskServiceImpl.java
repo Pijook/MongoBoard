@@ -10,11 +10,19 @@ import pl.jakub.mongoboardbackend.dto.TaskDto;
 import pl.jakub.mongoboardbackend.dto.TaskEntity;
 import pl.jakub.mongoboardbackend.repository.TaskRepository;
 import pl.jakub.mongoboardbackend.service.TaskService;
+import pl.jakub.mongoboardbackend.service.validation.ActionType;
+import pl.jakub.mongoboardbackend.service.validation.TaskValidator;
+import pl.jakub.mongoboardbackend.service.validation.impl.TaskValidatorBuilder;
 
 @Service
-@RequiredArgsConstructor
 class TaskServiceImpl implements TaskService {
 
+    public TaskServiceImpl(final TaskValidatorBuilder validatorBuilder, final TaskRepository taskRepository) {
+        this.validator = validatorBuilder.linkValidators();
+        this.taskRepository = taskRepository;
+    }
+
+    private final TaskValidator validator;
     private final TaskRepository taskRepository;
 
     @Override
@@ -23,17 +31,19 @@ class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto addTask(TaskDto taskDto) {
+    public TaskDto addTask(final TaskDto taskDto) {
+        validator.validate(taskDto, ActionType.CREATE);
         return TaskDto.map(taskRepository.save(TaskEntity.map(taskDto)));
     }
 
     @Override
-    public TaskDto updateTask(TaskDto taskDto) {
+    public TaskDto updateTask(final TaskDto taskDto) {
+        validator.validate(taskDto, ActionType.UPDATE);
         return TaskDto.map(taskRepository.save(TaskEntity.map(taskDto)));
     }
 
     @Override
-    public void deleteTask(String id) {
+    public void deleteTask(final String id) {
         taskRepository.deleteById(id);
     }
 }
