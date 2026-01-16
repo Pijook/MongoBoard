@@ -17,12 +17,34 @@ export const taskApi = {
   },
 
   addTask: async (task: CreateTaskDto): Promise<Task> => {
+    const now = new Date().toISOString().split('T')[0];
     const taskWithDates = {
-      ...task,
+      taskType: task.taskType,
       id: null,
-      createdAt: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-      updatedAt: new Date().toISOString().split('T')[0],
-      errors: []
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      assignee: task.assignee,
+      priority: task.priority,
+      createdAt: now,
+      updatedAt: now,
+      errors: [],
+      // Include type-specific fields based on taskType
+      ...(task.taskType === 'BUG' && { blocker: task.blocker ?? false }),
+      ...(task.taskType === 'FEATURE' && {
+        targetVersion: task.targetVersion ?? '',
+        effortEstimate: task.effortEstimate ?? '',
+      }),
+      ...(task.taskType === 'STORY' && {
+        storyPoints: task.storyPoints ?? null,
+        acceptanceCriteria: task.acceptanceCriteria ?? '',
+      }),
+      ...(task.taskType === 'EPIC' && {
+        childTaskIds: task.childTaskIds ?? [],
+      }),
+      ...(task.taskType === 'IMPROVEMENT' && {
+        affectedArea: task.affectedArea ?? '',
+      }),
     };
     const response = await axiosInstance.post<Task>('/add', taskWithDates);
     return response.data;
