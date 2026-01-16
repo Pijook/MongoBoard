@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-
 import pl.jakub.mongoboardbackend.dto.TaskDto;
-import pl.jakub.mongoboardbackend.dto.TaskEntity;
+import pl.jakub.mongoboardbackend.dto.TaskMapper;
+import pl.jakub.mongoboardbackend.entity.TaskEntity;
 import pl.jakub.mongoboardbackend.repository.TaskRepository;
 import pl.jakub.mongoboardbackend.service.TaskService;
 import pl.jakub.mongoboardbackend.service.validation.ActionType;
@@ -27,19 +26,19 @@ class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> getAllTasks() {
-        return taskRepository.findAll().stream().map(TaskDto::map).toList();
+        return taskRepository.findAll().stream().map(TaskMapper::mapToTask).toList();
     }
 
     @Override
     public TaskDto addTask(final TaskDto taskDto) {
         validator.validate(taskDto, ActionType.CREATE);
-        return TaskDto.map(taskRepository.save(TaskEntity.map(taskDto)));
+        return TaskMapper.mapToTask(taskRepository.save(TaskMapper.mapToEntity(taskDto)));
     }
 
     @Override
     public TaskDto updateTask(final TaskDto taskDto) {
         validator.validate(taskDto, ActionType.UPDATE);
-        return TaskDto.map(taskRepository.save(TaskEntity.map(taskDto)));
+        return TaskMapper.mapToTask(taskRepository.save(TaskMapper.mapToEntity(taskDto)));
     }
 
     @Override

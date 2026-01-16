@@ -2,18 +2,20 @@ package pl.jakub.mongoboardbackend.service.validation.impl;
 
 import org.springframework.stereotype.Component;
 
-import io.micrometer.common.util.StringUtils;
+import pl.jakub.mongoboardbackend.dto.StoryTaskDto;
 import pl.jakub.mongoboardbackend.dto.TaskDto;
 import pl.jakub.mongoboardbackend.service.validation.ActionType;
 import pl.jakub.mongoboardbackend.service.validation.TaskValidator;
 
 @Component
-public class TaskDescriptionValidator extends TaskValidator {
+public class StoryTaskValidator extends TaskValidator {
 
     @Override
     public boolean validate(final TaskDto taskDto, final ActionType actionType) {
-        if(StringUtils.isEmpty(taskDto.getDescription())) {
-            taskDto.getErrors().add("Description is required");
+        if (taskDto instanceof StoryTaskDto storyTask) {
+            if (storyTask.getStoryPoints() != null && storyTask.getStoryPoints() <= 0) {
+                taskDto.getErrors().add("Story points must be positive");
+            }
         }
 
         return checkNext(taskDto, actionType);

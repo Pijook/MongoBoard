@@ -20,11 +20,11 @@ public abstract class TaskValidator {
             return next.validate(taskDto, actionType);
         }
 
-        if(CollectionUtils.isEmpty(taskDto.errors())) {
+        if(CollectionUtils.isEmpty(taskDto.getErrors())) {
             return true;
         }
         else {
-            throw new IllegalArgumentException(StringUtils.join(taskDto.errors(), ';'));
+            throw new IllegalArgumentException(StringUtils.join(taskDto.getErrors(), ';'));
         }
     }
 }

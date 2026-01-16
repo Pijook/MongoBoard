@@ -12,8 +12,8 @@ public class TaskTitleValidator extends TaskValidator {
 
     @Override
     public boolean validate(final TaskDto taskDto, final ActionType actionType) {
-        if(StringUtils.isEmpty(taskDto.title())) {
-            taskDto.errors().add("Title is required");
+        if(StringUtils.isEmpty(taskDto.getTitle())) {
+            taskDto.getErrors().add("Title is required");
         }
 
         return checkNext(taskDto, actionType);
