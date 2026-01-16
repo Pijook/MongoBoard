@@ -80,3 +80,21 @@ export interface CreateTaskDto {
   childTaskIds?: string[];
   affectedArea?: string;
 }
+
+export interface TaskFilter {
+  taskType?: TaskType;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  assignee?: string;
+  search?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+export interface TaskStatistics {
+  totalTasks: number;
+  byStatus: Record<string, number>;
+  byPriority: Record<string, number>;
+  byTaskType: Record<string, number>;
+  byAssignee: Record<string, number>;
+}

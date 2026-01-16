@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Task, CreateTaskDto } from './types';
+import type { Task, CreateTaskDto, TaskFilter, TaskStatistics } from './types';
 
 const API_BASE_URL = '/api/tasks';
 
@@ -13,6 +13,25 @@ const axiosInstance = axios.create({
 export const taskApi = {
   getAllTasks: async (): Promise<Task[]> => {
     const response = await axiosInstance.get<Task[]>('/all');
+    return response.data;
+  },
+
+  filterTasks: async (filter: TaskFilter): Promise<Task[]> => {
+    const params = new URLSearchParams();
+    if (filter.taskType) params.append('taskType', filter.taskType);
+    if (filter.status) params.append('status', filter.status);
+    if (filter.priority) params.append('priority', filter.priority);
+    if (filter.assignee) params.append('assignee', filter.assignee);
+    if (filter.search) params.append('search', filter.search);
+    if (filter.dateFrom) params.append('dateFrom', filter.dateFrom);
+    if (filter.dateTo) params.append('dateTo', filter.dateTo);
+
+    const response = await axiosInstance.get<Task[]>(`/filter?${params.toString()}`);
+    return response.data;
+  },
+
+  getStatistics: async (): Promise<TaskStatistics> => {
+    const response = await axiosInstance.get<TaskStatistics>('/stats');
     return response.data;
   },
 

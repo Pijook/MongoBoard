@@ -13,9 +13,11 @@ import { COLUMNS } from '../../utils/constants';
 import { Column } from './Column';
 import type { TaskStatus } from '../../api/types';
 import { LoadingSpinner } from '../UI/LoadingSpinner';
+import { FilterPanel } from '../FilterPanel';
+import { Statistics } from '../Statistics';
 
 export const Board: React.FC = () => {
-  const { tasks, loading, error, updateTask } = useTasks();
+  const { tasks, loading, error, updateTask, filter, setFilter, clearFilters } = useTasks();
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -84,6 +86,12 @@ export const Board: React.FC = () => {
       onDragEnd={handleDragEnd}
     >
       <div className="container mx-auto px-4 py-6">
+        <Statistics />
+        <FilterPanel
+          filter={filter}
+          onFilterChange={setFilter}
+          onClearFilters={clearFilters}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {columns.map((column) => (
             <Column
